@@ -1,1 +1,44 @@
+#include <Servo.h>
+#define catraca A0
+#define trigger 11 
+#define echo A1
+#define vermelho 13
+#define verde 12
+Servo servo;
+int distancia = 0;
+
+long readUltrasonicDistance(int triggerPin, int echoPin)
+{
+  pinMode(triggerPin, OUTPUT);  // Clear the trigger
+  digitalWrite(triggerPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigger pin to HIGH state for 10 microseconds
+  digitalWrite(triggerPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(triggerPin, LOW);
+  pinMode(echo, INPUT);
+  // Reads the echo pin, and returns the sound wave travel time in microseconds
+  return pulseIn(echoPin, HIGH);
+}
+void setup() {
+pinMode(vermelho, OUTPUT);
+pinMode(verde, OUTPUT);
+servo.attach(catraca);
+Serial.begin(9600);
+}
+
+void loop() {
+  distancia = 0.01723*readUltrasonicDistance(trigger, echo);
+  Serial.println(readUltrasonicDistance(trigger,echo));
+  if (distancia<10){
+    digitalWrite(verde, HIGH);
+    digitalWrite(vermelho, LOW);
+    servo.write(45);
+  }
+  else{
+    digitalWrite(verde, LOW);
+    digitalWrite(vermelho, HIGH);
+    servo.write(0);
+  }
+}
 
